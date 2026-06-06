@@ -1,0 +1,75 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "a2zwebltd/laravel-email-sequences",
+    "description": "A portable Laravel drip / lifecycle email-sequence engine — enrol users on registration, schedule time-delayed emails (onboarding, trial nurture, win-back), deliver them on a cron with pluggable eligibility rules, and manage everything from Nova.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "email",
+        "drip",
+        "sequences",
+        "lifecycle",
+        "onboarding",
+        "nova"
+    ],
+    "homepage": "https://github.com/a2zwebltd/laravel-email-sequences",
+    "support": {
+        "issues": "https://github.com/a2zwebltd/laravel-email-sequences/issues",
+        "source": "https://github.com/a2zwebltd/laravel-email-sequences"
+    },
+    "authors": [
+        {
+            "name": "A2Z WEB",
+            "homepage": "https://a2zweb.co/"
+        },
+        {
+            "name": "Dawid Makowski",
+            "role": "Maintainer",
+            "homepage": "https://github.com/makowskid"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "laravel/framework": "^11.0|^12.0|^13.0"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.25",
+        "orchestra/testbench": "^9.0|^10.0|^11.0",
+        "pestphp/pest": "^3.0|^4.0",
+        "pestphp/pest-plugin-laravel": "^3.0|^4.0"
+    },
+    "suggest": {
+        "laravel/nova": "Auto-registers Nova resources (EmailSequence, EmailSequenceDelivery) when present."
+    },
+    "autoload": {
+        "psr-4": {
+            "A2ZWeb\\EmailSequences\\": "src/",
+            "A2ZWeb\\EmailSequences\\Database\\Factories\\": "database/factories/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "A2ZWeb\\EmailSequences\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "A2ZWeb\\EmailSequences\\EmailSequencesServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "scripts": {
+        "test": "vendor/bin/pest",
+        "lint": "vendor/bin/pint"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    }
+}
