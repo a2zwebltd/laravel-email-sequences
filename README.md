@@ -1,5 +1,10 @@
 # Laravel Email Sequences
 
+[![Packagist Version](https://img.shields.io/packagist/v/a2zwebltd/laravel-email-sequences.svg)](https://packagist.org/packages/a2zwebltd/laravel-email-sequences)
+[![Downloads](https://img.shields.io/packagist/dt/a2zwebltd/laravel-feature-voting.svg)](https://packagist.org/packages/a2zwebltd/laravel-email-sequences)
+![PHP](https://img.shields.io/badge/PHP-%5E8.2-blue)
+![Laravel](https://img.shields.io/badge/Laravel-12%20%7C%2013-blue)
+
 A portable Laravel drip / lifecycle email engine. Enrol users into time-delayed
 email sequences (onboarding, trial nurture, win-back, feedback), deliver them on
 a cron, and stop a user's sequence the moment they convert — all driven by config
