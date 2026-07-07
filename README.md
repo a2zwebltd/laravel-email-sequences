@@ -53,6 +53,10 @@ enrolled into all sequences and delivery runs hourly.
    every due message, fires `SequenceDelivered`, and marks it sent.
 4. **Eligibility** — `should_enroll` gates who gets enrolled; `should_continue`
    stops a user's remaining deliveries (e.g. once they upgrade to a paid plan).
+   A sequence entry may also define its own `should_send` gate — when it returns
+   false at delivery time, that single message is skipped (marked sent, never
+   retried) while the rest of the user's sequence continues (e.g. skip a
+   "make your first call" nudge for users who already called the API).
 
 Use `emails:backfill-enrollments` to enrol users that pre-date installation or a
 newly added sequence.
@@ -64,7 +68,8 @@ See `config/email-sequences.php`:
 | Key | Purpose |
 |-----|---------|
 | `user_model` | The model enrolled into sequences |
-| `sequences` | The sequence set: `code => [name, days_delay, subject, view]` |
+| `sequences` | The sequence set: `code => [name, days_delay, subject, view, should_send?]` |
+| `sequences.*.should_send` | `fn ($user) => bool` — skip just this message when false (invokable class-string recommended so the config stays cacheable) |
 | `auto_enroll` | Enrol every newly-created user automatically |
 | `should_enroll` | `fn ($user) => bool` — gate enrolment |
 | `should_continue` | `fn ($user) => bool` — stop a user's sequence when false |

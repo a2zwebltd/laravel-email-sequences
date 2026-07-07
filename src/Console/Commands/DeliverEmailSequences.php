@@ -54,6 +54,24 @@ class DeliverEmailSequences extends Command
 
             $code = $delivery->emailSequence->sequence_code;
 
+            // Optional per-sequence gate: when the config entry defines a
+            // should_send callable (invokable class-string, keeping the config
+            // cacheable) and it returns false, skip just this delivery — mark
+            // it sent so it is never retried, but leave the rest of the
+            // user's sequence intact.
+            $shouldSend = config("email-sequences.sequences.{$code}.should_send");
+            if (is_string($shouldSend) && class_exists($shouldSend)) {
+                $shouldSend = app($shouldSend);
+            }
+
+            if (is_callable($shouldSend) && ! $shouldSend($user)) {
+                $this->line("Skipping '{$code}' for {$user->email}; should_send gate returned false.");
+                $delivery->update(['sent_at' => now()]);
+                Log::debug("EmailSequenceDelivery #{$delivery->id} ('{$code}') skipped for user #{$user->getKey()} by should_send gate");
+
+                continue;
+            }
+
             $this->line("Delivering '{$code}' to {$user->email}");
 
             Mail::send(new SequenceEmail($user, $code));
