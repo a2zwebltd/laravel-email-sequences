@@ -38,16 +38,22 @@ trait HasEmailSequences
 
         $enrolledFrom = $this->created_at ?? now();
 
-        EmailSequence::query()->each(function (EmailSequence $sequence) use ($enrolledFrom): void {
-            EmailSequenceDelivery::firstOrCreate(
-                [
-                    'user_id' => $this->getKey(),
-                    'email_sequence_id' => $sequence->id,
-                ],
-                [
-                    'scheduled_at' => $enrolledFrom->copy()->addDays($sequence->days_delay),
-                ],
-            );
-        });
+        // Defensive: if the table ever ends up with more than one live row per
+        // sequence_code, enrol against the oldest row only — never both.
+        EmailSequence::query()
+            ->orderBy('id')
+            ->get()
+            ->unique('sequence_code')
+            ->each(function (EmailSequence $sequence) use ($enrolledFrom): void {
+                EmailSequenceDelivery::firstOrCreate(
+                    [
+                        'user_id' => $this->getKey(),
+                        'email_sequence_id' => $sequence->id,
+                    ],
+                    [
+                        'scheduled_at' => $enrolledFrom->copy()->addDays($sequence->days_delay),
+                    ],
+                );
+            });
     }
 }

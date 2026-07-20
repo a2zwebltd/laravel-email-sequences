@@ -47,12 +47,19 @@ class DeliverEmailSequences extends Command
 
             if (is_callable($shouldContinue) && ! $shouldContinue($user)) {
                 $this->line("Stopping sequence for {$user->email}; removing pending deliveries.");
-                $user->emailSequenceDeliveries()->delete();
+                // Only pending rows — sent rows are delivery history and must survive.
+                $user->emailSequenceDeliveries()->whereNull('sent_at')->delete();
 
                 continue;
             }
 
-            $code = $delivery->emailSequence->sequence_code;
+            // A trashed (retired) sequence row leaves the relation null — leave
+            // such deliveries untouched for a later repair rather than crashing.
+            $code = $delivery->emailSequence?->sequence_code;
+
+            if ($code === null) {
+                continue;
+            }
 
             // Optional per-sequence gate: when the config entry defines a
             // should_send callable (invokable class-string, keeping the config
